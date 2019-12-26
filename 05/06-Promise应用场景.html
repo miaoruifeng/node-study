@@ -40,7 +40,8 @@
   <script src="./node_modules/jquery/dist/jquery.js"></script>
   <script>
     // 两个接口拿数据
-    // callback 方式实现
+
+    // 1. callback 方式实现
     // get('http://127.0.0.1:3000/users/3', function (userData) {
     //   get('http://127.0.0.1:3000/jobs', function (jobsData) {
     //     console.log(userData, jobsData)
@@ -52,23 +53,6 @@
     //     document.querySelector('#user_form').innerHTML = htmlStr
     //   })
     // })
-
-    // jQuery Promise 实现
-
-    var data = {}
-
-    $.get('http://127.0.0.1:3000/users/2')
-      .then(function (userData) {
-        data.user = userData
-        return $.get('http://127.0.0.1:3000/jobs')
-      })
-      .then(function (jobsData) {
-        data.jobs = jobsData
-        // console.log(data)
-        var htmlStr = template('tpl', data)
-        // console.log(htmlStr)
-        $("#user_form").html(htmlStr)
-      })
 
     // 回调函数封装 ajax get方法
     // 这个 get 是 callback 方式的 API
@@ -82,6 +66,64 @@
       }
       oReq.open('get', url, true)
       oReq.send()
+    }
+
+    // 2. jQuery Promise 实现
+    // var data = {}
+    // $.get('http://127.0.0.1:3000/users/2')
+    //   .then(function (userData) {
+    //     data.user = userData
+    //     return $.get('http://127.0.0.1:3000/jobs')
+    //   })
+    //   .then(function (jobsData) {
+    //     data.jobs = jobsData
+    //     // console.log(data)
+    //     var htmlStr = template('tpl', data)
+    //     // console.log(htmlStr)
+    //     $("#user_form").html(htmlStr)
+    //   })
+
+    // 3. Promise 封装 ajax get方法实现
+    var data = {}
+    pGet('http://127.0.0.1:3000/users/2')
+      .then((userdata) => {
+        console.log(userdata)
+        data.user = JSON.parse(userdata)
+        return pGet('http://127.0.0.1:3000/jobs')
+      })
+      .then((jobsdata) => {
+        console.log(jobsdata)
+        data.jobs = JSON.parse(jobsdata)
+        console.log(data)
+        var htmlStr = template('tpl', data)
+        console.log(htmlStr)
+        document.querySelector('#user_form').innerHTML = htmlStr
+      })
+
+    // 既可以用 callback  又可以用 Promise
+
+    // callback
+    // pGet('http://127.0.0.1:3000/users/2', (userdata) => {
+    //   console.log(userdata)
+    // })
+
+    // Promise
+    // pGet('http://127.0.0.1:3000/users/2')
+    //   .then((userdata) => {
+    //     console.log(userdata)
+    //   })
+    
+    // Promise 封装 ajax get方法
+    function pGet(url, callback) {
+      return new Promise((resolve, reject) => {
+        var oReq = new XMLHttpRequest()
+        oReq.onload = function () {
+          callback && callback(oReq.responseText)
+          resolve(oReq.responseText)
+        }
+        oReq.open('get', url, true)
+        oReq.send()
+      })
     }
   </script>
 </body>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>回调函数封装ajax方法</title>
+</head>
+
+<body>
+  <script>
+    pGet('data.json')
+      .then((data) => {
+        console.log(data)
+      })
+
+    // Promise 封装 ajax get方法
+    function pGet(url) {
+      return new Promise((resolve, reject) => {
+        var oReq = new XMLHttpRequest()
+        // 当请求加载成功之后要调用指定的函数
+        oReq.onload = function () {
+          // console.log(oReq.responseText)
+          // callback(oReq.responseText)
+          resolve(oReq.responseText)
+        }
+        oReq.open('get', url, true)
+        oReq.send()
+      })
+    }
+  </script>
+</body>
+
+</html>
