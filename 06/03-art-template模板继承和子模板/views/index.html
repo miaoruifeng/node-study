@@ -1,0 +1,23 @@
+{{ extend './layout.html' }}
+
+{{ block 'title' }} 首页 {{ /block }}
+
+{{ block 'head' }}
+<style>
+  body {
+    background: skyblue;
+  }
+</style>
+{{ /block }}
+
+{{ block 'content' }}
+<div>
+  <h1>Page Index</h1>
+</div>
+{{ /block }}
+
+{{ block 'script' }}
+<script>
+  window.alert('index js脚本加载了')
+</script>
+{{ /block }}
